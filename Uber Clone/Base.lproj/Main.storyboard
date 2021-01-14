@@ -301,7 +301,7 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F8D-UX-DNd">
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="F8D-UX-DNd">
                                         <rect key="frame" x="98.5" y="0.0" width="51" height="31"/>
                                     </switch>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Motorista" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0rw-9G-cl1">
@@ -416,6 +416,7 @@
                         <outlet property="nomeCompleto" destination="aWp-5R-ioM" id="CeO-kJ-yUf"/>
                         <outlet property="senha" destination="Eb4-FY-yq3" id="lTH-Pu-GjE"/>
                         <outlet property="senhaConfirmada" destination="kIq-LT-BSG" id="yFq-am-oge"/>
+                        <outlet property="tipoUsuario" destination="F8D-UX-DNd" id="82K-aK-wt4"/>
                         <segue destination="pCp-vl-T2b" kind="presentation" identifier="segueDestino" id="fqV-7I-Sie"/>
                     </connections>
                 </viewController>
@@ -475,6 +476,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="botaoChamar" destination="9Me-tg-6g8" id="M4r-i4-JC8"/>
                         <outlet property="mapa" destination="jLB-j6-DRT" id="3Jx-q0-9lN"/>
                     </connections>
                 </viewController>
@@ -520,7 +522,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="gRC-bA-4j2"/>
+        <segue reference="fqV-7I-Sie"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="fundo" width="2060" height="2060"/>

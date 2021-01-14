@@ -23,6 +23,8 @@ class PassageiroViewController: UIViewController, MKMapViewDelegate, CLLocationM
     }
     
     @IBOutlet weak var mapa: MKMapView!
+    @IBOutlet weak var botaoChamar: UIButton!
+    var chamarUber = false
     
     @IBAction func sair(_ sender: Any) {
         
@@ -51,7 +53,6 @@ class PassageiroViewController: UIViewController, MKMapViewDelegate, CLLocationM
     }
     
     func configurarMapa () {
-        
         self.gerenciadorDeLocalizacao.delegate = self
         self.gerenciadorDeLocalizacao.desiredAccuracy = kCLLocationAccuracyBest
         self.gerenciadorDeLocalizacao.requestWhenInUseAuthorization()
@@ -71,20 +72,34 @@ class PassageiroViewController: UIViewController, MKMapViewDelegate, CLLocationM
         }
     }
     
+    /*Quando o usuário clica no botão, é feita uma verificação se a variável "chamarUber" é true ou false. Caso ela seja false (como de padrão) é alterado o título do botão para "Cancelar Uber" e o valor da variável é alterado para true. Quando o usuário clica novamente no botão, é feita uma nova verificação se a variável é true ou false. Caso ela seja true, o título do botão volta a ser "Chamar Uber" e é cancelada a requisição para chamar um uber.
+    Primeiro clique no botão -> Chama o uber e altera o título para "Cancelar Uber"
+    Segundo clique no botão -> Cancela o uber e altera o título para "Chama Uber"
+ */
     @IBAction func chamarUber(_ sender: Any) {
-        //Recuperando os dados necessários para o motorista identificar o local em que o usuário está e qual seu nome e email. Esses dados estão sendo salvos no database
-        let database = Database.database().reference()
-        let autenticacao = Auth.auth()
-        if let email = autenticacao.currentUser?.email {
-            if let latitude = self.gerenciadorDeLocalizacao.location?.coordinate.latitude {
-                if let longitude = self.gerenciadorDeLocalizacao.location?.coordinate.longitude {
-                    //criando um nó "requisições"
-                    let requisicoes = database.child("requisicoes")
-                    let dadosUsuario = ["nome": "", "email": email, "latidude": latitude, "longitude": longitude] as [String : Any]
-                    //Criando mais um nó com uma identificação única e adicionando o valor contido no dicionário dadosUsuario
-                    requisicoes.childByAutoId().setValue(dadosUsuario)
+        if self.chamarUber == true {
+            self.botaoChamar.setTitle("Chamar Uber", for: .normal)
+            self.chamarUber = false
+            //Codar a parte de apagar a requisição do firebase
+        }else {
+            //Recuperando os dados necessários para o motorista identificar o local em que o usuário está e qual seu nome e email. Esses dados estão sendo salvos no database
+            let database = Database.database().reference()
+            let autenticacao = Auth.auth()
+            //Recuperando o email do usuário através do email cadastrado na autenticação
+            if let email = autenticacao.currentUser?.email {
+                //Recuperando os dados de latitude e longitude
+                if let latitude = self.gerenciadorDeLocalizacao.location?.coordinate.latitude {
+                    if let longitude = self.gerenciadorDeLocalizacao.location?.coordinate.longitude {
+                        //criando um nó "requisições"
+                        let requisicoes = database.child("requisicoes")
+                        let dadosUsuario = ["nome": "", "email": email, "latidude": latitude, "longitude": longitude] as [String : Any]
+                        //Criando mais um nó com uma identificação única e adicionando o valor contido no dicionário dadosUsuario
+                        requisicoes.childByAutoId().setValue(dadosUsuario)
+                    }
                 }
             }
+            self.botaoChamar.setTitle("Cancelar Uber", for: .normal)
+            self.chamarUber = true
         }
     }
     

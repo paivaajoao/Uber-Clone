@@ -22,27 +22,11 @@ class CadastrarViewController: UIViewController {
     @IBOutlet weak var tipoUsuario: UISwitch!
     
     var dataBase: DatabaseReference!
+    var tipoDeUsuarios = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        /*
-         if let token = AccessToken.current,
-         !token.isExpired {
-         let token = token.tokenString
-         let requisicao = FBSDKLoginKit.GraphRequest(graphPath: "me", parameters: ["fields": "email, name"], tokenString: token, version: nil, httpMethod: .get)
-         requisicao.start { (conecao, resultados, error) in
-         print("\(resultados)")
-         }
-         }else {
-         let facebookButton = FBLoginButton()
-         //facebookButton.center = view.center
-         facebookButton.delegate = self
-         facebookButton.permissions = ["public_profile", "email"]
-         //view.addSubview(facebookButton)
-         }
-         
-         // Do any additional setup after loading the view.
-         */
+        
     }
     
     func getAlert (title: String, message: String, titleAction: String) {
@@ -71,18 +55,16 @@ class CadastrarViewController: UIViewController {
                                                             self.getAlert(title: "Tente novamente", message: "Ocorreu um erro inesperado ao cadastrar o usuário. Por favor, tente novamente", titleAction: "OK")
                                                         }else {
                                                             //Redirecionando o usuário para a tela inicial do app e adicionando seus dados para  banco de dados do DataBase do Firebase
-                                                            var tipoUsuario = ""
-                                                            //Verificando se a pessoa que se cadastrou é passageiro ou motorista
                                                             if self.tipoUsuario.isOn {
-                                                                tipoUsuario = "Motorista"
+                                                                self.tipoDeUsuarios = "Motorista"
                                                             }else {
-                                                                tipoUsuario = "Passageiro"
+                                                                self.tipoDeUsuarios = "Passageiro"
                                                             }
                                                             self.dataBase = Database.database().reference()
                                                             let userId = Auth.auth().currentUser?.uid
                                                             //Criando o primeiro nó do Database
                                                             let usuario = self.dataBase.child("usuariosEmail")
-                                                            let dadosUsuario = ["nome": nomeCompletoR, "email": emailR, "tipo": tipoUsuario]
+                                                            let dadosUsuario = ["nome": nomeCompletoR, "email": emailR, "tipoUsuario": self.tipoDeUsuarios]
                                                             usuario.child(userId!).setValue(dadosUsuario)
                                                             //Redirecionando o usuário para a tela inicial do app
                                                             self.performSegue(withIdentifier: "segueDestino", sender: nil)
