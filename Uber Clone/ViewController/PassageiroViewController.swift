@@ -15,7 +15,6 @@ class PassageiroViewController: UIViewController, MKMapViewDelegate, CLLocationM
     
     var gerenciadorDeLocalizacao = CLLocationManager()
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -64,7 +63,7 @@ class PassageiroViewController: UIViewController, MKMapViewDelegate, CLLocationM
         if let coordenadas = self.gerenciadorDeLocalizacao.location?.coordinate {
             let regiao: MKCoordinateRegion = MKCoordinateRegion(center: coordenadas, latitudinalMeters: 200, longitudinalMeters: 200)
             self.mapa.setRegion(regiao, animated: true)
-            //Criando uma anotação no local em que o usuário está 
+            //Criando uma anotação no local em que o usuário está
             let anotacaoUsuario = MKPointAnnotation()
             anotacaoUsuario.coordinate = coordenadas
             anotacaoUsuario.title = "Seu local"
@@ -73,14 +72,31 @@ class PassageiroViewController: UIViewController, MKMapViewDelegate, CLLocationM
     }
     
     /*Quando o usuário clica no botão, é feita uma verificação se a variável "chamarUber" é true ou false. Caso ela seja false (como de padrão) é alterado o título do botão para "Cancelar Uber" e o valor da variável é alterado para true. Quando o usuário clica novamente no botão, é feita uma nova verificação se a variável é true ou false. Caso ela seja true, o título do botão volta a ser "Chamar Uber" e é cancelada a requisição para chamar um uber.
-    Primeiro clique no botão -> Chama o uber e altera o título para "Cancelar Uber"
-    Segundo clique no botão -> Cancela o uber e altera o título para "Chama Uber"
- */
+     Primeiro clique no botão -> Chama o uber e altera o título para "Cancelar Uber"
+     Segundo clique no botão -> Cancela o uber e altera o título para "Chama Uber"
+     */
     @IBAction func chamarUber(_ sender: Any) {
         if self.chamarUber == true {
-            self.botaoChamar.setTitle("Chamar Uber", for: .normal)
             self.chamarUber = false
             //Codar a parte de apagar a requisição do firebase
+            let alerta = UIAlertController(title: "Cancelar Uber", message: "Deseja mesmo cancelar o Uber?", preferredStyle: .alert)
+            let cancelar = UIAlertAction(title: "Não cancelar Uber", style: .default, handler: nil)
+            let confirmar = UIAlertAction(title: "Cancelar Uber", style: .destructive) { (acao) in
+                let aut = Auth.auth()
+                let emailR = aut.currentUser?.email
+                let referencia = Database.database().reference()
+                //acessando os dados do nó requisicoes
+                let requisicoes = referencia.child("requisicoes")
+                //ordenando, primeiramente, os dados de acordo com os emails e isolando apenas o email do usuário
+                requisicoes.queryOrdered(byChild: "email").queryEqual(toValue: emailR).observeSingleEvent(of: .childAdded) { (dados) in
+                    dados.ref.removeValue()
+                    self.botaoChamar.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 1)
+                    self.botaoChamar.setTitle("Chamar Uber", for: .normal)
+                }
+            }
+            alerta.addAction(cancelar)
+            alerta.addAction(confirmar)
+            present(alerta, animated: true, completion: nil)
         }else {
             //Recuperando os dados necessários para o motorista identificar o local em que o usuário está e qual seu nome e email. Esses dados estão sendo salvos no database
             let database = Database.database().reference()
@@ -90,16 +106,32 @@ class PassageiroViewController: UIViewController, MKMapViewDelegate, CLLocationM
                 //Recuperando os dados de latitude e longitude
                 if let latitude = self.gerenciadorDeLocalizacao.location?.coordinate.latitude {
                     if let longitude = self.gerenciadorDeLocalizacao.location?.coordinate.longitude {
-                        //criando um nó "requisições"
-                        let requisicoes = database.child("requisicoes")
-                        let dadosUsuario = ["nome": "", "email": email, "latidude": latitude, "longitude": longitude] as [String : Any]
-                        //Criando mais um nó com uma identificação única e adicionando o valor contido no dicionário dadosUsuario
-                        requisicoes.childByAutoId().setValue(dadosUsuario)
+                        
+                        if let uid = autenticacao.currentUser?.uid {
+                            //acessando os dados de todos os usuários logados
+                            let usuariosEmail = database.child("usuariosEmail")
+                            //acessando os dados do usuário logado
+                            let dadosUser = usuariosEmail.child(uid)
+                            dadosUser.observe(.value) { (dados) in
+                                //convertendo os dados do usuário logado em um formato que o swift entenda
+                                let dict = dados.value as? NSDictionary
+                                //recuperando o nome do usuário logado através do índice "nome"
+                                let nome = dict?["nome"] as? String ?? ""
+                                print(nome)
+                                //criando um nó "requisições"
+                                let requisicoes = database.child("requisicoes")
+                                let dadosUsuario = ["nome": nome, "email": email, "latidude": latitude, "longitude": longitude] as [String : Any]
+                                //Criando mais um nó com uma identificação única e adicionando o valor contido no dicionário dadosUsuario
+                                requisicoes.childByAutoId().setValue(dadosUsuario)
+                                
+                            }
+                        }
                     }
                 }
             }
             self.botaoChamar.setTitle("Cancelar Uber", for: .normal)
             self.chamarUber = true
+            self.botaoChamar.backgroundColor = UIColor(displayP3Red: 0.831, green: 0.237, blue: 0.146, alpha: 1)
         }
     }
     
