@@ -67,7 +67,7 @@ class CadastrarViewController: UIViewController {
                                                             let dadosUsuario = ["nome": nomeCompletoR, "email": emailR, "tipoUsuario": self.tipoDeUsuarios]
                                                             usuario.child(userId!).setValue(dadosUsuario)
                                                             //Redirecionando o usuário para a tela inicial do app
-                                                            self.performSegue(withIdentifier: "segueDestino", sender: nil)
+                                                            //self.performSegue(withIdentifier: "segueDestino", sender: nil)
                                                         }
                                                     }else {
                                                         print("Ocorreu um erro ao cadastrar usuário")

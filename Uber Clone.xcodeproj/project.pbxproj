@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		61605E716F1ECDBB01FE9C01 /* Pods_Uber_Clone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 043040EC9AC0CB4C893AFEDB /* Pods_Uber_Clone.framework */; };
+		952337AF25B512140041883A /* TableViewControllerRequisicoes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952337AE25B512140041883A /* TableViewControllerRequisicoes.swift */; };
+		954AD54A25B9158F00FE2300 /* Requisicoes .swift in Sources */ = {isa = PBXBuildFile; fileRef = 954AD54925B9158F00FE2300 /* Requisicoes .swift */; };
 		95B1152425926180006C5EE1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B1152325926180006C5EE1 /* AppDelegate.swift */; };
 		95B1152625926180006C5EE1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B1152525926180006C5EE1 /* SceneDelegate.swift */; };
 		95B1152825926180006C5EE1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B1152725926180006C5EE1 /* ViewController.swift */; };
@@ -24,6 +26,8 @@
 		04073EC2E4611ED22696AB38 /* Pods-Uber Clone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Uber Clone.release.xcconfig"; path = "Target Support Files/Pods-Uber Clone/Pods-Uber Clone.release.xcconfig"; sourceTree = "<group>"; };
 		043040EC9AC0CB4C893AFEDB /* Pods_Uber_Clone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Uber_Clone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9153E1FCDB7D8F0510213216 /* Pods-Uber Clone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Uber Clone.debug.xcconfig"; path = "Target Support Files/Pods-Uber Clone/Pods-Uber Clone.debug.xcconfig"; sourceTree = "<group>"; };
+		952337AE25B512140041883A /* TableViewControllerRequisicoes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewControllerRequisicoes.swift; sourceTree = "<group>"; };
+		954AD54925B9158F00FE2300 /* Requisicoes .swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Requisicoes .swift"; sourceTree = "<group>"; };
 		95B1152025926180006C5EE1 /* Uber Clone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Uber Clone.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		95B1152325926180006C5EE1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		95B1152525926180006C5EE1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -108,6 +112,8 @@
 				95E120D52596EE740026C8D6 /* ViewControllerEntrar.swift */,
 				95E120D72596EEA60026C8D6 /* CadastrarViewController.swift */,
 				95C59DA925A7CC21009F8491 /* PassageiroViewController.swift */,
+				952337AE25B512140041883A /* TableViewControllerRequisicoes.swift */,
+				954AD54925B9158F00FE2300 /* Requisicoes .swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -235,6 +241,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				952337AF25B512140041883A /* TableViewControllerRequisicoes.swift in Sources */,
+				954AD54A25B9158F00FE2300 /* Requisicoes .swift in Sources */,
 				95C59DAA25A7CC21009F8491 /* PassageiroViewController.swift in Sources */,
 				95E120D62596EE740026C8D6 /* ViewControllerEntrar.swift in Sources */,
 				95B1152825926180006C5EE1 /* ViewController.swift in Sources */,

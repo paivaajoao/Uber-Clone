@@ -35,7 +35,7 @@ class ViewControllerEntrar: UIViewController {
                                 }else {
                                     print("Sucesso ao cadastrar usuário")
                                     //Transferindo o usuário para a tela inicial do app
-                                    self.performSegue(withIdentifier: "segueLogin", sender: nil)
+                                    //self.performSegue(withIdentifier: "segueLogin", sender: nil)
                                 }
                             }else {
                                 print("Erro ao cadastrar usuário")
@@ -59,7 +59,7 @@ class ViewControllerEntrar: UIViewController {
             case .cancelled:
                 print("Usuário clicou no botão cancelar")
             case .success(_, _, _):
-                self.performSegue(withIdentifier: "segueLogin", sender: nil)
+               // self.performSegue(withIdentifier: "segueLogin", sender: nil)
                 self.facebookDados()
             case .failed(_):
                 print("Ocorreu um erro inesperado")

@@ -19,8 +19,25 @@ class ViewController: UIViewController {
         let autenticacao = Auth.auth()
         autenticacao.addStateDidChangeListener { (auth, usuario) in
             if usuario != nil {
-                let identificador = "segueDireta"
-                self.performSegue(withIdentifier: identificador, sender: nil)
+                let referencia = Database.database().reference()
+                
+                //acessando os dados contidos no nó "usuariosEmail"
+                let usuariosEmail = referencia.child("usuariosEmail")
+                
+                //acessando os dados contidos no nó do usuário logado 
+                let dadosUser = usuariosEmail.child(autenticacao.currentUser!.uid)
+                dadosUser.observe(.value) { (dados) in
+                    let dict = dados.value as? NSDictionary
+                    //recuperando o dado referente ao tipo de usuário
+                    let tipoUsuario = dict?["tipoUsuario"] as? String ?? ""
+                    print(tipoUsuario)
+                    
+                    if tipoUsuario == "Passageiro" {
+                        self.performSegue(withIdentifier: "segueDireta", sender: nil)
+                    }else {
+                        self.performSegue(withIdentifier: "segueTable", sender: nil)
+                    }
+                }
                 print("O usuário está logado pelo Firebase")
             }
         }
