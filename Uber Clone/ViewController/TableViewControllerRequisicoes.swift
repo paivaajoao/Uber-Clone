@@ -10,12 +10,9 @@ import UIKit
 import Firebase
 import FBSDKLoginKit
 
-
 class TableViewControllerRequisicoes: UITableViewController {
     
-    var nome: String = ""
-    var email: String = ""
-    var requisicoes: [String: Any] = [:]
+    var requisicoes: [Requisicoes] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,13 +21,22 @@ class TableViewControllerRequisicoes: UITableViewController {
         //acessando os dados do nó requisicoes
         let requisicoes = referencia.child("requisicoes")
         requisicoes.observe(.childAdded) { (dados) in
-            let dadosRequisicao = dados.value as? [String: Any]
-            self.requisicoes = dadosRequisicao!
-            //print(self.requisicoes)
-            self.nome = dadosRequisicao?["nome"] as? String ?? ""
-            //print(self.nome)
-            self.email = dadosRequisicao?["email"] as? String ?? ""
-            print(self.email)
+            //convertando os dados para um formato que o swift entenda
+            let dadosRequisicao = dados.value as? NSDictionary
+            //recuperando o dado "nome" através do seu índice
+            let nomeR = dadosRequisicao?["nome"] as? String ?? ""
+            //recuperando o dado "email" através do seu índice
+            let emailR = dadosRequisicao?["email"] as? String ?? ""
+            //recuperando o dado "longitude" através do seu índice
+            let longitude = dadosRequisicao?["longitude"] as! Double
+            //recuperando o dado "latitude" através do seu índice
+            let latitude = dadosRequisicao?["latidude"] as! Double
+            
+            
+            let requisicaoInicializada = Requisicoes(nome: nomeR, email: emailR, latitude: latitude, longitude: longitude)
+            self.requisicoes.append(requisicaoInicializada)
+            print(self.requisicoes)
+            
             self.tableView.reloadData()
         }
         
@@ -75,16 +81,8 @@ class TableViewControllerRequisicoes: UITableViewController {
         let celula = tableView.dequeueReusableCell(withIdentifier: "celulaReuso", for: indexPath)
         //recuperando um dado por linha
         let requisicaoCelula = self.requisicoes[indexPath.row]
-        
-        
-        
-        
- 
-
-        celula.textLabel?.text = self.nome
-        celula.detailTextLabel?.text = self.email
-        
-
+        celula.textLabel?.text = requisicaoCelula.nome
+        celula.detailTextLabel?.text = requisicaoCelula.email
         return celula
     }
     
