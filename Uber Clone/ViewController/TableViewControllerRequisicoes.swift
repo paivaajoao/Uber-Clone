@@ -9,11 +9,14 @@
 import UIKit
 import Firebase
 import FBSDKLoginKit
+import MapKit
 
-class TableViewControllerRequisicoes: UITableViewController {
+class TableViewControllerRequisicoes: UITableViewController, CLLocationManagerDelegate {
+    
+    var gerenciadorDeLocalizacao = CLLocationManager()
+    var localizacaoMotorista = CLLocationCoordinate2D()
     
     var requisicoes: [Requisicoes] = []
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -38,8 +41,14 @@ class TableViewControllerRequisicoes: UITableViewController {
             print(self.requisicoes)
             
             self.tableView.reloadData()
+            self.configurarMapa()
         }
-        
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let coordenadas = manager.location?.coordinate {
+            self.localizacaoMotorista = coordenadas
+        }
     }
     
     @IBAction func sair(_ sender: Any) {
@@ -65,7 +74,6 @@ class TableViewControllerRequisicoes: UITableViewController {
         alerta.addAction(cancelar)
         alerta.addAction(sairDoApp)
         self.present(alerta, animated: true, completion: nil)
-        
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -81,55 +89,25 @@ class TableViewControllerRequisicoes: UITableViewController {
         let celula = tableView.dequeueReusableCell(withIdentifier: "celulaReuso", for: indexPath)
         //recuperando um dado por linha
         let requisicaoCelula = self.requisicoes[indexPath.row]
+        
+        //recuperando os dados de localização do passageiro e do motorista e verificcando a distância entre os dois
+        let latitudePassageiro = requisicaoCelula.latitude
+        let longitudePassageiro = requisicaoCelula.longitude
+        let motoristaCLLocation = CLLocation(latitude: (self.gerenciadorDeLocalizacao.location?.coordinate.latitude)!, longitude: (self.gerenciadorDeLocalizacao.location?.coordinate.longitude)!)
+       let passageiroCLLocation = CLLocation(latitude: latitudePassageiro, longitude: longitudePassageiro)
+        //arrendondando a distância 
+        let distancia = round(motoristaCLLocation.distance(from: passageiroCLLocation) / 1000)
+        
         celula.textLabel?.text = requisicaoCelula.nome
-        celula.detailTextLabel?.text = requisicaoCelula.email
+        celula.detailTextLabel?.text = "\(requisicaoCelula.nome) está a \(distancia) Km de distância"
         return celula
     }
     
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    func configurarMapa () {
+        self.gerenciadorDeLocalizacao.delegate = self
+        self.gerenciadorDeLocalizacao.desiredAccuracy = kCLLocationAccuracyBest
+        self.gerenciadorDeLocalizacao.requestWhenInUseAuthorization()
+        self.gerenciadorDeLocalizacao.startUpdatingLocation()
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
 }
