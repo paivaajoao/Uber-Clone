@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import FBSDKLoginKit
 import MapKit
+import UserNotifications
 
 class TableViewControllerRequisicoes: UITableViewController, CLLocationManagerDelegate {
     
@@ -35,13 +36,30 @@ class TableViewControllerRequisicoes: UITableViewController, CLLocationManagerDe
             //recuperando o dado "latitude" através do seu índice
             let latitude = dadosRequisicao?["latidude"] as! Double
             
-            
             let requisicaoInicializada = Requisicoes(nome: nomeR, email: emailR, latitude: latitude, longitude: longitude)
             self.requisicoes.append(requisicaoInicializada)
             print(self.requisicoes)
             
             self.tableView.reloadData()
             self.configurarMapa()
+            
+            //Quando forem adicionados dados no nó requisições, será exibida uma notificação para o motorista caso ele esteja fora do app
+            let centroDeNotificacoes = UNUserNotificationCenter.current()
+            centroDeNotificacoes.requestAuthorization(options: [.sound, .alert]) { (permissao, erro) in
+            }
+            let conteudo = UNMutableNotificationContent()
+            conteudo.title = "Nova corrida!"
+            conteudo.body = "\(nomeR) está lhe esperando!"
+            
+            let data = Date().addingTimeInterval(5)
+            let componentesData = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: data)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: componentesData, repeats: false)
+            //criando um identificador único
+            let uuid = UUID().uuidString
+            let requisicao = UNNotificationRequest(identifier: uuid, content: conteudo, trigger: trigger)
+            centroDeNotificacoes.add(requisicao) { (erro) in
+               
+            }
         }
     }
     
@@ -84,7 +102,6 @@ class TableViewControllerRequisicoes: UITableViewController, CLLocationManagerDe
         return self.requisicoes.count
     }
 
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let celula = tableView.dequeueReusableCell(withIdentifier: "celulaReuso", for: indexPath)
         //recuperando um dado por linha
@@ -95,7 +112,7 @@ class TableViewControllerRequisicoes: UITableViewController, CLLocationManagerDe
         let longitudePassageiro = requisicaoCelula.longitude
         let motoristaCLLocation = CLLocation(latitude: (self.gerenciadorDeLocalizacao.location?.coordinate.latitude)!, longitude: (self.gerenciadorDeLocalizacao.location?.coordinate.longitude)!)
        let passageiroCLLocation = CLLocation(latitude: latitudePassageiro, longitude: longitudePassageiro)
-        //arrendondando a distância 
+        //convertendo a distância em quilômetros e arredondando
         let distancia = round(motoristaCLLocation.distance(from: passageiroCLLocation) / 1000)
         
         celula.textLabel?.text = requisicaoCelula.nome
